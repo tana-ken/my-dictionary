@@ -1,8 +1,5 @@
 # my-dictionary
-
-I'm an app. Or maybe I'm a library? I haven't decided yet. 
-
-The choice is up to you!
+A tiny web application for requesting Dictionary.com web api
 
 ## Usage
 
