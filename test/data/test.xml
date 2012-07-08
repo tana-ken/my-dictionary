@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dictionary query="test" totalresults="1">
+<entry source="pdict" id="4162883">
+		<display_form ><![CDATA[test]]></display_form>
+		<pron><![CDATA[[test]]]></pron>
+		<partofspeech pos="noun">
+			<defset>
+				<def charcnt="68" defno="1"><![CDATA[the means used to determine the quality, content, etc., of something]]></def>
+				<def charcnt="42" defno="2"><![CDATA[examination to evaluate a student or class]]></def>
+			</defset>
+		</partofspeech>
+		<partofspeech pos="verb (used with object)">
+			<defset>
+				<def charcnt="20" defno="3"><![CDATA[to subject to a test]]></def>
+			</defset>
+		</partofspeech>
+</entry>
+</dictionary>
