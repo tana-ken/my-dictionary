@@ -10,5 +10,8 @@
     [log4j/apache-log4j-extras "1.1"]
     [clj-http "0.4.3"]
     [clj-json "0.5.0"]
-    [clj-xpath "1.3.0"]])
-   
+    [clj-xpath "1.3.0"]
+    [compojure "1.1.0"]
+    [ring/ring-jetty-adapter "1.1.1"]]
+  :ring {:handler my-dictionary.core/interface-for-client}
+)

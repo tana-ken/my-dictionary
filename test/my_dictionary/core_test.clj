@@ -1,5 +1,6 @@
 (ns my-dictionary.core-test
   (:use
+   [my-dictionary.core]
    [clojure.test :only (deftest is)])
   (:require
    :reload-all
@@ -11,7 +12,7 @@
 
 (def test-url (str
                 "http://api-pub.dictionary.com/v001?vid="
-                (:vid core/properties)
+                (:vid properties)
                 "&q=test&type=define&site=dictionary"))
 
 (def test-xml (slurp "test/data/test.xml"))
@@ -19,19 +20,19 @@
 (def result-string "{\"word\":\"test\",\"entries\":[{\"pos\":\"noun\",\"mean\":\"the means used to determine the quality, content, etc., of something\"},{\"pos\":\"noun\",\"mean\":\"examination to evaluate a student or class\"},{\"pos\":\"verb (used with object)\",\"mean\":\"to subject to a test\"}]}")
 
 (deftest test-load-properties
-  (is (core/load-properties "test/data/test.s")
+  (is (load-properties "test/data/test.s")
       {:test "test"}))
 
 (deftest test-load-properties-ioe
   (is (thrown? myDictionary.java.AppException
-               (core/load-properties "wrong-file-path"))))
+               (load-properties "wrong-file-path"))))
 
 (deftest test-load-properties-re
   (is (thrown? java.lang.RuntimeException
-               (core/load-properties "test/data/test-wrong.s"))))
+               (load-properties "test/data/test-wrong.s"))))
 
 (deftest test-build-url
-  (is (core/build-url
+  (is (build-url
             "api-pub.dictionary.com"
             (:vid core/properties)
             "test"
@@ -40,21 +41,29 @@
       test-url)) 
 
 (deftest test-extract-xml
-  (is (core/extract-xml test-url)
+  (is (extract-xml test-url)
       test-xml))
 
 (deftest test-extract-xml-ioe
  (is (thrown? myDictionary.java.AppException
-              (core/extract-xml ""))))  
+              (extract-xml ""))))  
 
 (deftest test-generate-json
-  (is (core/generate-json test-xml)
+  (is (generate-json test-xml)
       result-string))
 
 (deftest test-generate-json-saxe
  (is (thrown? myDictionary.java.AppException
-              (core/generate-json ""))))
+              (generate-json ""))))
 
 (deftest test-from-build-to-get-dictionary-define-json
-  (is (core/from-build-url-to-generate-json "test")
+  (is (from-build-url-to-generate-json "test")
       result-string))
+
+(deftest test-interfece-for-client
+  (is (interface-for-client {:request-method :get :uri "/dictionary/define/test"})
+      {:status 200, :headers {"Content-Type" "text/html; charset=utf-8"}, :body "{\"word\":\"test\",\"entries\":[{\"pos\":\"noun\",\"mean\":\"the means used to determine the quality, content, etc., of something\"},{\"pos\":\"noun\",\"mean\":\"examination to evaluate a student or class\"},{\"pos\":\"verb (used with object)\",\"mean\":\"to subject to a test\"}]}"}))
+
+(deftest test-interface-for-client-404
+  (is (interface-for-client {:request-method :get :uri ""})
+      {:status 404, :headers {"Content-Type" "text/html; charset=utf-8"}, :body "Page not found"}))

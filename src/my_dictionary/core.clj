@@ -4,7 +4,21 @@
    [clojure.tools.logging :as logging]
    [clj-http.client :as http-client]
    [clj-xpath.core :as xpath]
-   [clj-json.core :as json])
+   [clj-json.core :as json]
+   [compojure.core :as compojure-core]
+   [compojure.route :as compojure-route])
+
+;;;
+  (:use compojure.core
+        [ring.util.response :only (file-response resource-response status)]
+        [ring.util.codec :only (url-decode)]
+        ring.middleware.content-type
+        ring.middleware.file-info
+                ring.middleware.head)
+
+
+
+   
   (:import
    (java.io.IOException)
    (org.xml.sax.SAXException)
@@ -70,3 +84,8 @@
   (-> (build-url "api-pub.dictionary.com" (:vid properties) word "define" "dictionary")
       (extract-xml ,)
       (generate-json ,)))
+
+(compojure-core/defroutes interface-for-client
+  (compojure-core/GET "/dictionary/define/:word" [word] (from-build-url-to-generate-json word))
+  (compojure-route/not-found "Page not found"))
+
