@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<thesaurus query="test" totalresults="3" page="1">
+	<entry type="direct">
+		<headword><![CDATA[test]]></headword>
+		<partofspeech>noun</partofspeech>
+		<definition><![CDATA[examination, quiz]]></definition>
+		<synonyms>
+			<item>analysis</item>
+			<item>approval</item>
+			<item>assessment</item>
+			<item>attempt</item>
+			<item>blue book</item>
+			<item>catechism</item>
+			<item>check</item>
+			<item>comp</item>
+			<item>confirmation</item>
+			<item>corroboration</item>
+			<item>countdown</item>
+			<item>criterion</item>
+			<item>dry run</item>
+			<item>elimination</item>
+			<item>essay</item>
+			<item>evaluation</item>
+			<item>exam</item>
+			<item>experiment</item>
+			<item>final</item>
+			<item>fling*</item>
+			<item>go*</item>
+			<item>inquest</item>
+			<item>inquiry</item>
+			<item>inspection</item>
+			<item>investigation</item>
+			<item>lick*</item>
+			<item>oral</item>
+			<item>ordeal</item>
+			<item>pop quiz</item>
+			<item>preliminary</item>
+			<item>probation</item>
+			<item>probing</item>
+			<item>proof</item>
+			<item>questionnaire</item>
+			<item>scrutiny</item>
+			<item>search</item>
+			<item>shibboleth</item>
+			<item>standard</item>
+			<item>substantiation</item>
+			<item>touchstone</item>
+			<item>trial</item>
+			<item>trial and error</item>
+			<item>trial run</item>
+			<item>try</item>
+			<item>tryout</item>
+			<item>verification</item>
+			<item>yardstick</item>
+		</synonyms>
+		<antonyms />
+		<slang>* = informal/non-formal usage </slang>
+	</entry>
+	<entry type="direct">
+		<headword><![CDATA[test]]></headword>
+		<partofspeech>verb</partofspeech>
+		<definition><![CDATA[examine, quiz]]></definition>
+		<synonyms>&lt;a href=&quot;/browse/analyze&quot; class=&quot;noline&quot;&gt;analyze&lt;/a&gt;, &lt;a href=&quot;/browse/assay&quot; class=&quot;noline&quot;&gt;assay&lt;/a&gt;, &lt;a href=&quot;/browse/assess&quot; class=&quot;noline&quot;&gt;assess&lt;/a&gt;, &lt;a href=&quot;/browse/check&quot; class=&quot;noline&quot;&gt;check&lt;/a&gt;, &lt;a href=&quot;/browse/confirm&quot; class=&quot;noline&quot;&gt;confirm&lt;/a&gt;, &lt;a href=&quot;/browse/demonstrate&quot; class=&quot;noline&quot;&gt;demonstrate&lt;/a&gt;, &lt;a href=&quot;/browse/experiment&quot; class=&quot;noline&quot;&gt;experiment&lt;/a&gt;, experimentalize, give a tryout, &lt;a href=&quot;/browse/inquire&quot; class=&quot;noline&quot;&gt;inquire&lt;/a&gt;, &lt;a href=&quot;/browse/investigate&quot; class=&quot;noline&quot;&gt;investigate&lt;/a&gt;, look into, make a trial run, match up, &lt;a href=&quot;/browse/prove&quot; class=&quot;noline&quot;&gt;prove&lt;/a&gt;, prove out, put to the test, &lt;a href=&quot;/browse/question&quot; class=&quot;noline&quot;&gt;question&lt;/a&gt;, run idea by someone, run it up a flagpole, see how it flies, see how the wind blows, send up a balloon, shake down, stack up, &lt;a href=&quot;/browse/substantiate&quot; class=&quot;noline&quot;&gt;substantiate&lt;/a&gt;, &lt;a href=&quot;/browse/try&quot; class=&quot;noline&quot;&gt;try&lt;/a&gt;, try on, try on for size, try out, &lt;a href=&quot;/browse/validate&quot; class=&quot;noline&quot;&gt;validate&lt;/a&gt;, &lt;a href=&quot;/browse/verify&quot; class=&quot;noline&quot;&gt;verify&lt;/a&gt;</synonyms>
+	</entry>
+	<entry type="syn">
+		<headword><![CDATA[analysis]]></headword>
+		<partofspeech>noun</partofspeech>
+		<definition><![CDATA[examination and determination]]></definition>
+		<synonyms>&lt;a href=&quot;/browse/assay&quot; class=&quot;noline&quot;&gt;assay&lt;/a&gt;, &lt;a href=&quot;/browse/breakdown&quot; class=&quot;noline&quot;&gt;breakdown&lt;/a&gt;, dissection, &lt;a href=&quot;/browse/dissolution&quot; class=&quot;noline&quot;&gt;dissolution&lt;/a&gt;, &lt;a href=&quot;/browse/division&quot; class=&quot;noline&quot;&gt;division&lt;/a&gt;, &lt;a href=&quot;/browse/inquiry&quot; class=&quot;noline&quot;&gt;inquiry&lt;/a&gt;, &lt;a href=&quot;/browse/investigation&quot; class=&quot;noline&quot;&gt;investigation&lt;/a&gt;, partition, &lt;a href=&quot;/browse/reasoning&quot; class=&quot;noline&quot;&gt;reasoning&lt;/a&gt;, &lt;a href=&quot;/browse/resolution&quot; class=&quot;noline&quot;&gt;resolution&lt;/a&gt;, &lt;a href=&quot;/browse/scrutiny&quot; class=&quot;noline&quot;&gt;scrutiny&lt;/a&gt;, &lt;a href=&quot;/browse/search&quot; class=&quot;noline&quot;&gt;search&lt;/a&gt;, &lt;a href=&quot;/browse/separation&quot; class=&quot;noline&quot;&gt;separation&lt;/a&gt;, &lt;a href=&quot;/browse/study&quot; class=&quot;noline&quot;&gt;study&lt;/a&gt;, subdivision, &lt;a href=&quot;/browse/test&quot; class=&quot;noline&quot;&gt;test&lt;/a&gt;</synonyms>
+	</entry>
+</thesaurus>

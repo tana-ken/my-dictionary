@@ -2,23 +2,12 @@
   (:require
    :reload-all
    [clojure.tools.logging :as logging]
+   [clojure.string :as string]
    [clj-http.client :as http-client]
    [clj-xpath.core :as xpath]
    [clj-json.core :as json]
    [compojure.core :as compojure-core]
    [compojure.route :as compojure-route])
-
-;;;
-  (:use compojure.core
-        [ring.util.response :only (file-response resource-response status)]
-        [ring.util.codec :only (url-decode)]
-        ring.middleware.content-type
-        ring.middleware.file-info
-                ring.middleware.head)
-
-
-
-   
   (:import
    (java.io.IOException)
    (org.xml.sax.SAXException)
@@ -42,50 +31,131 @@
 ;;; cache properties
 (def properties (load-properties property-file-path))
 
-(defn build-url
+(defn build-url-with-prms
   "to build url string with parameters"
-  [host vid q type site]
-   (str "http://" host "/v001?vid=" vid "&q=" q "&type=" type "&site=" site))
+  [url prms]
+  (str url (string/replace-first (apply str (for [[k v] prms] (str "&" (name k) "=" v))) "&" "?")))
 
-(defn extract-xml
-  "to send request and extract xml part from reply"
+(defn get-body
+  "to send request and get body element of the response"
   [url]
   (:body (try
            (http-client/get url)
            (catch java.io.IOException ioe (handle-exception ioe)))))
 
-(defn generate-json
-  "to return a hashmap including word and entries"
+(defn safety-xpath-call
+  "to call xpath safely"
+  [xpath xml]
+  (try
+    (xpath/$x xpath xml)
+    (catch org.xml.sax.SAXException saxe (handle-exception saxe))))
+
+(defn get-result
+   "to extract text from a xml-string"
+   [xpath xml-string key-list]
+   (for [line (safety-xpath-call xpath xml-string)]
+     (reduce get line key-list))) 
+
+(defn- get-query-word
+  "to extract query word from a xml-string"
   [xml-string]
-  ;; local function to call xpath/$x safely
-  (letfn [(safety-xpath-call
-            [xpath xml]
-            (try
-              (xpath/$x xpath xml)
-              (catch org.xml.sax.SAXException saxe (handle-exception saxe))))] ; end of letfn safety-xpath-call
-    (let [word (:query (:attrs (first (safety-xpath-call "//dictionary" xml-string))))
-          entries (let [pos (for [line (safety-xpath-call "//partofspeech" xml-string)] (:pos (:attrs line)))] ; end of let pos
+  (first (get-result "(/*)[1]" xml-string '(:attrs :query))))
 
-    ; local function to extract mean from //partofspeach/defset/def
-      (letfn [(get-mean
-                [each-pos xml-string]
-                (for [line (safety-xpath-call (str "//partofspeech[@pos=\"" each-pos "\"]/defset/def") xml-string)] (:text line)))] ; end of letfn get-mean
+(defn extract-dictionary
+  "to extract word and entries from a xml-string of thesaurus"
+  [xml-string]
+  {:word (get-query-word xml-string)
+   :entries
+     (flatten
+       (for [pos (get-result "//partofspeech" xml-string '(:attrs :pos))]
+         (for [line (get-result (str "//partofspeech[@pos=\"" pos "\"]/defset/def") xml-string '(:text))] {:pos pos :text line})))})
 
-        ; generating entries
-        (for [i pos]
-          (for [j (get-mean i xml-string)] {:pos i :mean j}))))] ; end of let word, entries
+(defn extract-thesaurus
+  "to extract word and entries from a xml-string of thesaurus"
+  [xml-string]
+  ("have not implemented yet"))
 
-      ; get-dictionary-define-json (cont.)
-      (json/generate-string {:word word :entries (flatten entries)}))))
+(defn extract-slang
+  "to extract word and entries from a xml-string of slang"
+  [xml-string]
+  ("have not implemented yet"))
 
-(defn from-build-url-to-generate-json
-  "combining three functions"
-  [word]
-  (-> (build-url "api-pub.dictionary.com" (:vid properties) word "define" "dictionary")
-      (extract-xml ,)
-      (generate-json ,)))
+(defn extract-etymology
+  "to extract word and entries from a xml-string of etymology"
+  [xml-string]
+  ("have not implemented yet"))
+
+(defn extract-example
+  "to extract word and entries from a xml-string of example"
+  [xml-string]
+  {:word (get-query-word xml-string)
+   :entries (get-result "//example" xml-string '(:text))})
+  
+(defn extract-questionanswer
+  "to extract word and entries from a xml-string of questionanswer"
+  [xml-string]
+  ("have not implemented yet"))
+
+(defn extract-synonyms
+  "to extract word and entries from a xml-string of synonyms"
+  [xml-string]
+  ("have not implemented yet"))
+
+(defn extract-random
+  "to extract word from a xml-string of random"
+  [xml-string site]
+  {:word (first (get-result (str "//" site  "/random_entry") xml-string '(:text)))})
+
+(defn extract-spelling
+  "to extract word and entries from a xml-string of spelling"
+  [xml-string]
+  {:word (get-query-word xml-string)
+   :entries (get-result "//suggestion" xml-string '(:text))})
+
+(defn extract-wotd
+  "to extract word and entries from a xml-string of woth"
+  [xml-string]
+  ("have not implemented yet"))
+
+(defn call-api
+  [url prms extract-function]
+  (-> (build-url-with-prms url prms)
+      (get-body ,)
+      (extract-function ,)
+      (json/generate-string ,)))
+
+(def root-url "http://api-pub.dictionary.com/v001")
 
 (compojure-core/defroutes interface-for-client
-  (compojure-core/GET "/dictionary/define/:word" [word] (from-build-url-to-generate-json word))
+  ;
+  (compojure-core/GET "/dictionary/:word" [word]
+                      (call-api root-url
+                                (list
+                                 [:vid (:vid properties)] ["q" word] ["type" "define"] ["site" "dictionary"])
+                      extract-dictionary))
+  ;
+  (compojure-core/GET "/example/:word" [word]
+                      (call-api root-url
+                                (list
+                                 [:vid (:vid properties)] ["q" word] ["type" "example"])
+                       extract-example))
+  ;
+  (compojure-core/context "/random" []
+                          ("/dictionary" []
+                           (call-api root-url
+                                     (list
+                                      [:vid (:vid properties)] ["type" "random"] ["site" "dictionary"])
+                            extract-random))
+                          ("/thesaurus" []
+                           (call-api root-url
+                                     (list
+                                      [:vid (:vid properties)] ["type" "random"] ["site" "thesaurus"])
+                            extract-random)))
+  ;
+  (compojure-core/GET "/spelling/:word" [word]
+                      (call-api root-url
+                                (list
+                                 [:vid (:vid properties)] ["q" word] ["type" "spelling"])
+                       extract-spelling))
+  ;
   (compojure-route/not-found "Page not found"))
-

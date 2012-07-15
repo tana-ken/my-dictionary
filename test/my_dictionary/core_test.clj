@@ -1,23 +1,48 @@
 (ns my-dictionary.core-test
   (:use
-   [my-dictionary.core]
-   [clojure.test :only (deftest is)])
-  (:require
    :reload-all
-   [clojure.test :as test]
-   [my-dictionary.core :as core])
+   [my-dictionary.core]
+   [clojure.test])
+  (:require
+   [clj-json.core :as json])
   (:import
    (myDictionary.java.AppException)
    (java.lang.RuntimeException)))
 
-(def test-url (str
+(def test-properties (load-properties property-file-path)) 
+
+(def test-dictionary-url (str
                 "http://api-pub.dictionary.com/v001?vid="
-                (:vid properties)
+                (:vid test-properties)
                 "&q=test&type=define&site=dictionary"))
 
-(def test-xml (slurp "test/data/test.xml"))
+(def test-dictionary-xml (slurp "test/data/test-dictionary.xml"))
 
-(def result-string "{\"word\":\"test\",\"entries\":[{\"pos\":\"noun\",\"mean\":\"the means used to determine the quality, content, etc., of something\"},{\"pos\":\"noun\",\"mean\":\"examination to evaluate a student or class\"},{\"pos\":\"verb (used with object)\",\"mean\":\"to subject to a test\"}]}")
+(def test-thesaurus-xml (slurp "test/data/test-thesaurus.xml"))
+
+(def test-slang-xml (slurp "test/data/test-slang.xml"))
+
+(def test-etymology-xml (slurp "test/data/test-etymology.xml"))
+
+(def test-example-xml (slurp "test/data/test-example.xml"))
+
+(def test-questionanswer-xml (slurp "test/data/test-questionanswer.xml"))
+
+(def test-synonym-xml (slurp "test/data/test-synonym.xml"))
+
+(def test-random-dictionary-xml (slurp "test/data/test-random-dictionary.xml"))
+
+(def test-random-thesaurus-xml (slurp "test/data/test-random-thesaurus.xml"))
+
+(def test-spelling-xml (slurp "test/data/test-spelling.xml"))
+
+(def test-thesaurus-xml (slurp "test/data/test-wotd.xml"))
+
+(def test-dictionary-result {:word "test", :entries '({:pos "noun", :text "the means used to determine the quality, content, etc., of something"} {:pos "noun", :text "examination to evaluate a student or class"} {:pos "verb (used with object)", :text "to subject to a test"})})
+
+(def test-example-result {:word "test", :entries '("noun : to put to the test.  <br>verb (used without object) : People test better in a relaxed environment. <ex>,</ex>to test for diabetes.  <br>.")})
+
+(def test-spelling-result {:word "teest", :entries '("testy" "tees" "weest" "deist" "doest" "toast" "reset" "retest" "tersest" "truest" "teased" "teat" "tee's" "teed" "tests" "Tevet" "detest" "tenet" "tester" "tweet" "teats" "Tet" "taste" "tasty" "EST" "beset" "desert" "est" "tamest" "DST" "teds" "Tess" "Tues" "teas" "text" "ties" "toes" "attest" "Ted's")})
 
 (deftest test-load-properties
   (is (load-properties "test/data/test.s")
@@ -31,38 +56,41 @@
   (is (thrown? java.lang.RuntimeException
                (load-properties "test/data/test-wrong.s"))))
 
-(deftest test-build-url
-  (is (build-url
-            "api-pub.dictionary.com"
-            (:vid core/properties)
-            "test"
-            "define"
-            "dictionary")
-      test-url)) 
+(deftest test-build-url-with-prms
+  (is (build-url-with-prms
+            root-url
+            (list
+             [:vid (:vid test-properties)] [:q "test"] [:type "define"] [:site "dictionary"]))
+      test-dictionary-url))
 
-(deftest test-extract-xml
-  (is (extract-xml test-url)
-      test-xml))
+(deftest test-get-body
+  (is (get-body test-dictionary-url)
+      test-dictionary-xml))
 
-(deftest test-extract-xml-ioe
- (is (thrown? myDictionary.java.AppException
-              (extract-xml ""))))  
+(deftest test-get-body-ioe
+  (is (thrown? myDictionary.java.AppException
+              (get-body ""))))
 
-(deftest test-generate-json
-  (is (generate-json test-xml)
-      result-string))
+(deftest test-extract-dictionary
+  (is (extract-dictionary test-dictionary-xml)
+      test-dictionary-result))
 
-(deftest test-generate-json-saxe
- (is (thrown? myDictionary.java.AppException
-              (generate-json ""))))
+(deftest test-extract-example
+  (is (extract-example test-example-xml)
+      test-example-result))
 
-(deftest test-from-build-to-get-dictionary-define-json
-  (is (from-build-url-to-generate-json "test")
-      result-string))
+(deftest test-extract-spelling
+  (is (extract-spelling test-spelling-xml)
+      test-spelling-result))
 
-(deftest test-interfece-for-client
-  (is (interface-for-client {:request-method :get :uri "/dictionary/define/test"})
-      {:status 200, :headers {"Content-Type" "text/html; charset=utf-8"}, :body "{\"word\":\"test\",\"entries\":[{\"pos\":\"noun\",\"mean\":\"the means used to determine the quality, content, etc., of something\"},{\"pos\":\"noun\",\"mean\":\"examination to evaluate a student or class\"},{\"pos\":\"verb (used with object)\",\"mean\":\"to subject to a test\"}]}"}))
+(deftest test-call-api
+  (is (call-api root-url (list [:vid (:vid test-properties)] ["q" "test"] ["type" "define"] ["site" "dictionary"]) extract-dictionary)
+     (json/generate-string test-dictionary-result)))
+
+
+(deftest test-interfece-for-client-dictionary
+  (is (:status (interface-for-client {:request-method :get :uri "/dictionary/define/test"}))
+      200))
 
 (deftest test-interface-for-client-404
   (is (interface-for-client {:request-method :get :uri ""})

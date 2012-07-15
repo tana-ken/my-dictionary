@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<wordoftheday>
+	<entry id="609" month="01" day="01" year="2001">
+		<word>acclimate</word>
+		<shortdefinition><![CDATA[to accustom or become accustomed to a new climate, environment, or situation.]]></shortdefinition>
+		<partofspeech>transitive and intransitive verb</partofspeech>
+		<pronunciation>uh-KLY-mit; AK-luh-mayt</pronunciation>
+		<headernotes />
+		<footernotes><![CDATA[<i>Acclimate</i> is from French <i>acclimater</i>, from <i>a-</i>, "to" (from Latin <i>ad-</i>) + <i>climat</i>, "climate," from Late Latin <i>clima</i>, <i>climat-</i>, from Greek <i>klima</i>, "inclination; the supposed slope of the earth toward the pole; region; clime," from <i>klinein</i>, "to lean."]]></footernotes>
+		<definitions totalresults="1">
+			<definition number="1">
+				<partofspeech>transitive and intransitive verb</partofspeech>
+				<data><![CDATA[To accustom or become accustomed to a new climate, environment, or situation.]]></data>
+			</definition>
+		</definitions>
+		<examples totalresults="2">
+			<example number="1">
+				<quote><![CDATA[Getting <strong>acclimated</strong> to being in the suburbs, Sally? Mrs. Westin asked.]]></quote>
+				<source><![CDATA[<cite>The Woman Who Cut Off Her Leg at the Maidstone Club and Other Stories</cite>]]></source>
+				<reference />
+				<author>Julia Slavin</author>
+				<work />
+				<date />
+				<url />
+				<subwork />
+			</example>
+			<example number="2">
+				<quote><![CDATA[The Korbels did not have much time to pull their lives together and <strong>acclimate</strong> themselves to English culture.]]></quote>
+				<source><![CDATA[<cite>Seasons of Her Life</cite>]]></source>
+				<reference />
+				<author>Ann Blackman</author>
+				<work />
+				<date />
+				<url />
+				<subwork />
+			</example>
+		</examples>
+		<previouswordsoftheday>
+			<previousword month="12" day="31" year="2000">Hogmanay</previousword>
+			<previousword month="12" day="30" year="2000">Grub Street</previousword>
+			<previousword month="12" day="29" year="2000">manse</previousword>
+			<previousword month="12" day="28" year="2000">gloaming</previousword>
+			<previousword month="12" day="27" year="2000">impassible</previousword>
+			<previousword month="12" day="26" year="2000">quidnunc</previousword>
+			<previousword month="12" day="25" year="2000">wassail</previousword>
+		</previouswordsoftheday>
+	</entry>
+</wordoftheday>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<slang query="ass" totalresults="1">
+	<entry source="sdict" id="179">
+		<defset>
+			<def num="1" pos="n." >
+				<define><![CDATA[the buttocks. (Usually objectionable.) ]]></define>
+					<examples>
+						<example num="1" ><![CDATA[<i> This big monster of a guy threatened to kick me in the ass if I didn't get out of the way.</i>]]></example>
+					</examples>
+			</def>
+			<def num="2" pos="n." >
+				<define><![CDATA[women considered as sexual gratification. (Rude and derogatory.) ]]></define>
+					<examples>
+						<example num="1" ><![CDATA[<i> All he could think about was getting some ass.</i>]]></example>
+					</examples>
+			</def>
+			<def num="3" pos="n." >
+				<define><![CDATA[one's whole body; oneself. (Usually objectionable.) ]]></define>
+					<examples>
+						<example num="1" ><![CDATA[<i> Your ass is really in trouble!</i>]]></example>
+					</examples>
+			</def>
+		</defset>
+		<headword><![CDATA[ass]]></headword>
+		
+		
+		
+	</entry>
+</slang>
