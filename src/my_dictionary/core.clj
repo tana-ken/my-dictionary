@@ -125,14 +125,17 @@
       (json/generate-string ,)))
 
 (def root-url "http://api-pub.dictionary.com/v001")
+(def common-headers {"Access-Control-Allow-Origin" "*" "Content-Type" "application/json"})
 
 (compojure-core/defroutes interface-for-client
   ;
   (compojure-core/GET "/dictionary/:word" [word]
+                      (merge {:headers common-headers}
+                             {:body
                       (call-api root-url
                                 (list
                                  [:vid (:vid properties)] ["q" word] ["type" "define"] ["site" "dictionary"])
-                      extract-dictionary))
+                      extract-dictionary)}))
   ;
   (compojure-core/GET "/example/:word" [word]
                       (call-api root-url
@@ -156,6 +159,7 @@
                       (call-api root-url
                                 (list
                                  [:vid (:vid properties)] ["q" word] ["type" "spelling"])
-                       extract-spelling))
+                                extract-spelling))
+
   ;
   (compojure-route/not-found "Page not found"))
