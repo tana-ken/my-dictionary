@@ -61,14 +61,31 @@
   [xml-string]
   (first (get-result "(/*)[1]" xml-string '(:attrs :query))))
 
-(defn extract-dictionary
-  "to extract word and entries from a xml-string of thesaurus"
+(defn- extract-dictionary-sub
+;  "to extract word and entries from a xml-string of thesaurus"
   [xml-string]
   {:word (get-query-word xml-string)
    :entries
      (flatten
        (for [pos (get-result "//partofspeech" xml-string '(:attrs :pos))]
          (for [line (get-result (str "//partofspeech[@pos=\"" pos "\"]/defset/def") xml-string '(:text))] {:pos pos :text line})))})
+
+(defn- convert-to-table-data
+  [entry]
+  {:c [{:v (:pos entry)} {:v (:text entry)}]})
+
+(defn- create-data
+  [entries]
+  {:cols
+   [{:id "pos" :label "POS" :type "string"}
+    {:id "text":label "Meaning" :type "string"}]
+   :rows (vec (for [entry entries] (convert-to-table-data entry)))})
+
+(defn extract-dictionary
+  ""
+  [xml-string]
+  (create-data (:entries (extract-dictionary-sub xml-string))))
+  
 
 (defn extract-thesaurus
   "to extract word and entries from a xml-string of thesaurus"
