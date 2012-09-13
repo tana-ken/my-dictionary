@@ -4,7 +4,10 @@
    [my-dictionary.core]
    [clojure.test])
   (:require
-   [clj-json.core :as json])
+   [clj-json.core :as json]
+   [clj-time.core :as time]
+   [clj-time.coerce :as time-coerce]
+   [datomic.api :as d])
   (:import
    (myDictionary.java.AppException)
    (java.lang.RuntimeException)))
@@ -95,3 +98,31 @@
 (deftest test-interface-for-client-404
   (is (interface-for-client {:request-method :get :uri ""})
       {:status 404, :headers {"Content-Type" "text/html; charset=utf-8"}, :body "Page not found"}))
+
+(def test-url "datomic:mem://test")
+
+(defn pre-test-datomic
+  ""
+  []
+  (do (d/gc-storage (d/connect test-url) (time-coerce/to-date (time/now)))
+      (d/delete-database test-url)
+      (d/create-database test-url)
+      (add-attribute-work-word (d/connect test-url))
+      (add-attribute-work-time (d/connect test-url))))
+
+(deftest test-add-a-work
+  (is
+    (do (pre-test-datomic)
+        (add-a-work (d/connect test-url) "test" (time-coerce/to-date (time/now)))
+        ((first (find-all (d/connect test-url))) 0))
+    "test"))
+
+(deftest test-today?
+  (today? (time-coerce/to-date (time/now))))
+
+(deftest test-limit?
+  (is
+    (do (pre-test-datomic)
+        (add-a-work (d/connect test-url) "test" (time-coerce/to-date (time/now)))
+        [(limit? 1 (d/connect test-url)) (limit? 2 (d/connect test-url))])
+    [false true]))

@@ -12,6 +12,8 @@
     [clj-json "0.5.0"]
     [clj-xpath "1.3.0"]
     [compojure "1.1.1"]
-    [ring/ring-jetty-adapter "1.1.1"]]
+    [ring/ring-jetty-adapter "1.1.1"]
+    [clj-time "0.4.4"]
+    [com.datomic/datomic-free "0.8.3488"]]
   :ring {:handler my-dictionary.core/interface-for-client}
 )

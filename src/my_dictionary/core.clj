@@ -1,4 +1,5 @@
 (ns my-dictionary.core
+  (:use [datomic.api :only [db q] :as d])
   (:require
    :reload-all
    [clojure.tools.logging :as logging]
@@ -7,7 +8,9 @@
    [clj-xpath.core :as xpath]
    [clj-json.core :as json]
    [compojure.core :as compojure-core]
-   [compojure.route :as compojure-route])
+   [compojure.route :as compojure-route]
+   [clj-time.core :as time]
+   [clj-time.coerce :as time-coerce])
   (:import
    (java.io.IOException)
    (org.xml.sax.SAXException)
@@ -85,7 +88,6 @@
   ""
   [xml-string]
   (create-data (:entries (extract-dictionary-sub xml-string))))
-  
 
 (defn extract-thesaurus
   "to extract word and entries from a xml-string of thesaurus"
@@ -134,12 +136,76 @@
   [xml-string]
   ("have not implemented yet"))
 
+;(def uri "datomic:free://localhost:4334//test")
+(def uri "datomic:mem://my-dictionary")
+
+(d/create-database uri)
+
+(def conn
+  (d/connect uri))
+
+(defn add-attribute-work-word
+  ""
+  [cnct]
+  (d/transact cnct [{
+                     :db/id #db/id[:db.part/db]
+                     :db/ident :work/word
+                     :db/valueType :db.type/string
+                     :db/cardinality :db.cardinality/one
+                     :db/doc "A word"
+                     :db.install/_attribute :db.part/db}]))
+
+(defn add-attribute-work-time
+  ""
+  [cnct]
+  (d/transact cnct [{
+                     :db/id #db/id[:db.part/db]
+                     :db/ident :work/time
+                     :db/valueType :db.type/instant
+                     :db/cardinality :db.cardinality/one
+                     :db/doc "Time"
+                     :db.install/_attribute :db.part/db}]))
+
+(add-attribute-work-word conn)
+(add-attribute-work-time conn)
+
+(defn add-a-work
+  ""
+  [cnct word date]
+  (d/transact cnct [{:db/id #db/id[:db.part/user] :work/word word :work/time (time-coerce/to-date date)}]))
+
+(defn find-all
+  ""
+  [cnct]
+  (q '[:find ?n ?t :where [?e :work/word ?n] [?e :work/time ?t]] (db cnct)))
+
+(defn today?
+  ""
+  [date]
+  (let [now (time/now) today (time/date-time (time/year now) (time/month now) (time/day now))]
+    (time/within? (time/interval today (time/plus today (time/days 1))) (time-coerce/from-date date)))) 
+
+(defn find-today
+  ""
+  [cnct]
+  (q '[:find ?n ?t :where [?e :work/word ?n] [?e :work/time ?t] [(my-dictionary.core/today? ?t)]] (db cnct)))
+
+(defn limit?
+  ""
+  [n cnct]
+  (> n (count (find-today cnct))))
+
 (defn call-api
+  ""
   [url prms extract-function]
-  (-> (build-url-with-prms url prms)
-      (get-body ,)
-      (extract-function ,)
-      (json/generate-string ,)))
+  (if (limit? 50 conn)
+    (do
+      (add-a-work conn ((nth prms 1) 1) (time-coerce/to-date (time/now)))
+      (-> (build-url-with-prms url prms)
+          (get-body ,)
+          (extract-function ,)
+          (json/generate-string ,)))
+    (json/generate-string (create-data '({:pos "" :text "I am sorry, this system is busy. Please access again tomorrow"})))))
 
 (def root-url "http://api-pub.dictionary.com/v001")
 (def common-headers {"Access-Control-Allow-Origin" "*" "Content-Type" "application/json"})
@@ -179,4 +245,8 @@
                                 extract-spelling))
 
   ;
+  (compojure-core/GET "/find-all" []
+                      (str (find-all conn)))
+  ;
+
   (compojure-route/not-found "Page not found"))
